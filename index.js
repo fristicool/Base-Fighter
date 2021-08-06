@@ -5,6 +5,7 @@ const serverless = require('serverless-http');
 
 const { mongoose } = require('./db.js');
 var baseController = require('./controllers/baseController.js');
+var troopController = require('./controllers/troopController.js');
 
 var app = express();
 app.use(bodyParser.json());
@@ -14,5 +15,6 @@ app.listen(process.env.PORT || 3002, () => console.log('Server stbed at port : 3
 
 
 app.use('/', baseController);
+app.use('/troop', troopController);
 
 module.exports.handler = serverless(app)
