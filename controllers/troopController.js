@@ -50,16 +50,18 @@ router.get('/:lat/:lon/:range', (req, res) => {
             });
         }
 
-        troop.find({latN: { $gte: lat - range}}, (err, data) => {
-            var found = data.filter(x => x.latN <= lat + range)
-            found = found.filter(x => x.lonN >= lon - range)
-            found = found.filter(x => x.lonN <= lon + range)
-
-            var tForUnity = {
-                found
-            }
+        var tForUnity = {
+            data: found
+        }
+        if (found.length > 0) {
             res.send(tForUnity);
-        });
+        }
+        else {
+            var error = {
+                data: "error"
+            }
+            res.send(error)
+        }
     });
 
     // var show = req.params.nm - req.params.nl
