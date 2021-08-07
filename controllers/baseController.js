@@ -19,7 +19,9 @@ router.get('/', (req, res) => {
 router.post('/post', (req, res) => {
     var b = new base({
         lat: req.body.lat,
-        lon: req.body.lon
+        lon: req.body.lon,
+        latN: req.body.latN,
+        lonN: req.body.lonN
     });
     b.save((err, doc) => {
 
