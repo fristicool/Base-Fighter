@@ -4,12 +4,14 @@ var ObjectId = require('mongoose').Types.ObjectId;
 
 var { troop } = require('../troop')
 
-router.get('/get/:lat/:lon/:range', (req, res) => {
-    var lat = parseFloat(req.params.lat)
-    var lon = parseFloat(req.params.lon)
+router.get('/get/:lat1/:lat2/:lon1/:lon2/:range', (req, res) => {
+    var lat = req.params.lat1 + "." + req.params.lat2
+    var lon = req.params.lon1 + "." + req.params.lon2
+
+    lat = parseFloat(req.params.lat)
+    lon = parseFloat(req.params.lon)
 
     var range = parseFloat("0." + req.params.range) / 2;
-    var mop = Math.random()
 
     var minlat = lat - range;
     var maxlat = lat + range;
