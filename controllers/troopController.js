@@ -4,56 +4,73 @@ var ObjectId = require('mongoose').Types.ObjectId;
 
 var { troop } = require('../troop')
 
-router.get('/:lat/:lon/:range', (req, res) => {
+router.get('/get/:lat/:lon/:range', (req, res) => {
     var lat = parseFloat(req.params.lat)
     var lon = parseFloat(req.params.lon)
 
-    var range = parseFloat(req.params.range) / 2;
+    var range = parseFloat("0." + req.params.range) / 2;
     var mop = Math.random()
 
-    if (mop < 0.5) {
-        range = range * -1
-    }
+    var minlat = lat - range;
+    var maxlat = lat + range;
+    
+    var minlon = lon - range;
+    var maxlon = lon + range;
 
-    troop.find({latN: { $gte: lat - range}}, (err, data) => {
+    troop.find({latN: { $gte: minlat, $lte: maxlat }, lonN: { $gte: minlon, $lte: maxlon }}, (err, data) => {
         //res.send(data)
 
-        var found = data.filter(x => x.latN <= lat + range)
-        found = found.filter(x => x.lonN >= lon - range)
-        found = found.filter(x => x.lonN <= lon + range)
+        // var tmr = {
+        //     lat,
+        //     lon,
+        //     range,
+        //     data
+        // }
+    
+        // res.send(tmr)
 
-        for (var i = 0; i < 10 - found.length; i + 1) {
-            var range = parseFloat(req.params.range) / 2 * Math.random()
+        console.log(data)
+
+        if(!Array.isArray(data)) {
+            data = [data]
+        }
+        console.log(data)
+
+        var tilten = 10 - data.length
+
+        for (var i = 0; i < tilten; i++) {
+            console.log(i)
+            var rangeR = range * Math.random()
             var mop = Math.random()
 
             if (mop < 0.5) {
-                range = range * -1
+                rangeR = rangeR * -1
             }
 
-            var range2 = parseFloat(req.params.range) / 2 * Math.random()
+            var rangeR2 = range* Math.random()
             var mop2 = Math.random()
 
             if (mop2 < 0.5) {
-                range2 = range2 * -1
+                rangeR2 = rangeR2 * -1
             }
 
             var t = new troop({
-                lat: new String(lat + range),
-                lon: new String(lon + range2),
-                latN: lat + range,
-                lonN: lon + range2
+                lat: new String(lat + rangeR),
+                lon: new String(lon + rangeR2),
+                latN: lat + rangeR,
+                lonN: lon + rangeR2
             });
             t.save((err, doc) => {
         
-                if (!err) { res.send(doc); }
+                if (!err) { console.log("saved new troop")}
                 else { console.log('Error in base Save :' + JSON.stringify(err, undefined, 2)); }
             });
         }
 
         var tForUnity = {
-            data: found
+            data
         }
-        if (found.length > 0) {
+        if (data.length > 0) {
             res.send(tForUnity);
         }
         else {
